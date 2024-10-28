@@ -10,7 +10,7 @@ pub trait IERC20<TContractState> {
     fn deployer(self: @TContractState) -> ContractAddress;
     fn whoami(self: @TContractState) -> ContractAddress;
     
-    fn mint(ref self: TContractState, holder: ContractAddress, amount: u128);
+    fn mint(ref self: TContractState, holder: ContractAddress, amount: u128) -> bool;
     fn transfer(ref self: TContractState, recipient: ContractAddress, amount: u128);
     fn transfer_from(ref self: TContractState, holder: ContractAddress, recipient: ContractAddress, amount: u128);
     fn approve(ref self: TContractState, spender: ContractAddress, amount: u128);
@@ -113,9 +113,10 @@ pub mod ERC20 {
             self.allowances.entry(holder).entry(spender).read()
         }
 
-        fn mint(ref self: ContractState, holder: ContractAddress, amount: u128) {
+        fn mint(ref self: ContractState, holder: ContractAddress, amount: u128) -> bool {
             assert(get_caller_address() == self.deployer.read(), 'Only deployer');
             self.balanceOf.entry(holder).write(self.balanceOf.entry(holder).read() + amount);
+            true
         }
 
         fn approve(ref self: ContractState, spender: ContractAddress, amount: u128) {

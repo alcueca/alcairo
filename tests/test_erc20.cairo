@@ -1,4 +1,8 @@
-use starknet::ContractAddress;
+use starknet::{
+    ContractAddress,
+    syscalls,
+    SyscallResultTrait
+};
 use snforge_std::{
     declare,
     ContractClassTrait,
@@ -48,9 +52,9 @@ fn test_constructor_params() {
 fn test_whoami() {
     let (_, dispatcher) = deploy_contract();
     
-    let whoami = dispatcher.whoami();
+    let _whoami = dispatcher.whoami();
 
-    // println!("I am {:?}", whoami);
+    // println!("I am {:?}", _whoami);
 }
 
 #[test]
@@ -62,6 +66,28 @@ fn test_mint() {
     dispatcher.mint(holder, 42);
 
     let balanceOf = dispatcher.balanceOf(holder);
+    assert(balanceOf == 42, 'Invalid balance');
+}
+
+#[test]
+fn test_mint_low_level() {
+    let (contract_address, dispatcher) = deploy_contract();
+
+    let recipient: ContractAddress = 'recipient'.try_into().unwrap();
+    let amount: felt252 = 42;
+
+    let mut calldata: Array<felt252> = array![];
+    Serde::serialize(@recipient, ref calldata);
+    Serde::serialize(@amount, ref calldata);
+
+    let mut _res = syscalls::call_contract_syscall(
+        contract_address, selector!("mint"), calldata.span()
+    ).unwrap_syscall();
+
+    let result = Serde::<bool>::deserialize(ref _res).unwrap();
+    assert(result == true, 'Wrong return value');
+
+    let balanceOf = dispatcher.balanceOf(recipient);
     assert(balanceOf == 42, 'Invalid balance');
 }
 
