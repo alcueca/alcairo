@@ -10,7 +10,7 @@ use snforge_std::{
 
 // use erc20::IERC20SafeDispatcher;
 // use erc20::IERC20SafeDispatcherTrait;
-use alcairo::erc20::{ ERC20, IERC20Dispatcher, IERC20DispatcherTrait };
+use cairomate::erc20::{ ERC20, IERC20Dispatcher, IERC20DispatcherTrait };
 
 const NAME: felt252 = 'ClaimToken';
 const SYMBOL: felt252 = 'CTK';
