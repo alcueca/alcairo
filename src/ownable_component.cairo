@@ -31,7 +31,7 @@ pub mod Ownable {
         owner: ContractAddress,
     }
 
-    #[embeddable_as(Ownable)]
+    #[embeddable_as(PublicImpl)]
     impl OwnableImpl<TContractState, +HasComponent<TContractState>> of super::IOwnable<ComponentState<TContractState>> {
         fn owner(self: @ComponentState<TContractState>) -> ContractAddress {
             self.owner.read()

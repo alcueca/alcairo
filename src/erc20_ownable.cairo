@@ -1,7 +1,7 @@
 use core::starknet::{ ContractAddress };
 
 #[starknet::interface]
-pub trait IERC20<TContractState> {
+pub trait IERC20Ownable<TContractState> {
     fn name(self: @TContractState) -> felt252;
     fn symbol(self: @TContractState) -> felt252;
     fn decimals(self: @TContractState) -> u8;
@@ -78,12 +78,12 @@ use starknet::storage::{
     }
 
     #[abi(embed_v0)]
-    impl OwnableImpl = ownable_component::Ownable::Ownable<ContractState>;
+    impl OwnableImpl = ownable_component::Ownable::PublicImpl<ContractState>;
 
     impl OwnableInternalImpl = ownable_component::Ownable::InternalImpl<ContractState>;
 
     #[abi(embed_v0)]
-    impl ERC20Impl of super::IERC20<ContractState> {
+    impl ERC20OwnableImpl of super::IERC20Ownable<ContractState> {
         fn name(self: @ContractState) -> felt252 {
             self.name.read()
         }
